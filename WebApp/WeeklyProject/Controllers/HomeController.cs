@@ -15,6 +15,8 @@ namespace WeeklyProject.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.UserId = HttpContext.Session.GetInt32("UserId");
+            ViewBag.UserRole = HttpContext.Session.GetString("UserRole");
             return View();
         }
 

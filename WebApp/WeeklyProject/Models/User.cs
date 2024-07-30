@@ -3,19 +3,23 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WeeklyProject.Models
 {
+    [Table("Users")]
     public class User
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [Required]
-        [StringLength(20)]
-        public required string Name { get; set; }
-        [EmailAddress]
-        public required string Email { get; set; }
-        [Required]
-        [StringLength(20)]
-        public required string Password { get; set; }
-        public List<Role> Roles { get; set; } = [];
 
+        [Required]
+        [StringLength(100)]
+        public string Name { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string Email { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string Password { get; set; }
     }
 }
