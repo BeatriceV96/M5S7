@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WeeklyProject.Models
@@ -21,5 +22,8 @@ namespace WeeklyProject.Models
         [Required]
         [StringLength(100)]
         public string Password { get; set; }
+
+        // Navigation property
+        public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     }
 }

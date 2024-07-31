@@ -5,12 +5,14 @@ namespace WeeklyProject.Models
 {
     public class Ingredient
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]
-        [StringLength(50)]  
-        public required string Name { get; set; }
-        public List<Product> Products { get; set; } = [];
+        [StringLength(100)]
+        public string Name { get; set; }
+
+        public List<Product> Products { get; set; } = new();
     }
 }

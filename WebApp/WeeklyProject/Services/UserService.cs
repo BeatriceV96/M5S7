@@ -2,6 +2,7 @@
 using WeeklyProject.Models.Dto;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Http;
 
 namespace WeeklyProject.Services
 {
@@ -25,8 +26,8 @@ namespace WeeklyProject.Services
                 var query = @"
                     SELECT u.Id, u.Name, u.Email, r.Name AS RoleName
                     FROM Users u
-                    JOIN RoleUser ru ON u.Id = ru.UsersId
-                    JOIN Roles r ON ru.RolesId = r.Id
+                    JOIN UserRoles ur ON u.Id = ur.UserId
+                    JOIN Roles r ON ur.RoleId = r.Id
                     WHERE u.Email = @Email AND u.Password = @Password";
                 using (var command = new SqlCommand(query, connection))
                 {
