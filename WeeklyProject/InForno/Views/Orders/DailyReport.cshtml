@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Rapporto Giornaliero";
+}
+
+<h2>Rapporto Giornaliero</h2>
+
+<form asp-action="DailyReport" method="post">
+    <div class="form-group">
+        <label for="date">Seleziona una data:</label>
+        <input type="date" id="date" name="date" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Genera Rapporto</button>
+</form>
+
+@if (ViewBag.TotalOrders != null && ViewBag.TotalRevenue != null)
+{
+    <h3>Risultati per la data: @ViewBag.Date</h3>
+    <p>Numero totale di ordini evasi: @ViewBag.TotalOrders</p>
+    <p>Totale incassato: @string.Format("{0:C}", ViewBag.TotalRevenue)</p>
+}
+
+<a asp-action="Index" class="btn btn-secondary mt-5">Indietro</a>

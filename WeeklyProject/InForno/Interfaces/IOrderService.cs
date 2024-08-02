@@ -12,5 +12,8 @@ namespace InForno.Interfaces
         Task<OrderDto> CreateOrderAsync(OrderDto orderDto);
         Task<Order> UpdateOrderAsync(int id, OrderDto orderDto);
         Task DeleteOrderAsync(int id);
+        Task UpdateOrderStatusAsync(int id, bool isProcessed);
+        Task<int> GetTotalOrdersProcessedAsync(DateTime date);
+        Task<decimal> GetTotalRevenueAsync(DateTime date);
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 
 namespace InForno.Service
 {
@@ -20,13 +21,12 @@ namespace InForno.Service
 
         public async Task<List<Order>> GetAllOrdersAsync()
         {
-            return await _context.Orders.Include(o => o.OrderDetails).ToListAsync();
+            return await _context.Orders.Include(o => o.OrderDetails).ThenInclude(od => od.Product).ToListAsync();
         }
 
         public async Task<Order> GetOrderByIdAsync(int id)
         {
-            return await _context.Orders.Include(o => o.OrderDetails)
-                                        .FirstOrDefaultAsync(o => o.Id == id);
+            return await _context.Orders.Include(o => o.OrderDetails).ThenInclude(od => od.Product).FirstOrDefaultAsync(o => o.Id == id);
         }
 
         public async Task<OrderDto> CreateOrderAsync(OrderDto orderDto)
@@ -52,12 +52,9 @@ namespace InForno.Service
             return orderDto;
         }
 
-
-
         public async Task<Order> UpdateOrderAsync(int id, OrderDto orderDto)
         {
-            var order = await _context.Orders.Include(o => o.OrderDetails)
-                                             .FirstOrDefaultAsync(o => o.Id == id);
+            var order = await _context.Orders.Include(o => o.OrderDetails).FirstOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
             {
@@ -90,6 +87,30 @@ namespace InForno.Service
                 _context.Orders.Remove(order);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task UpdateOrderStatusAsync(int id, bool isProcessed)
+        {
+            var order = await _context.Orders.FindAsync(id);
+            if (order != null)
+            {
+                order.IsProcessed = isProcessed;
+                _context.Orders.Update(order);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<int> GetTotalOrdersProcessedAsync(DateTime date)
+        {
+            return await _context.Orders.CountAsync(o => o.IsProcessed && o.OrderDate.Date == date.Date);
+        }
+
+        public async Task<decimal> GetTotalRevenueAsync(DateTime date)
+        {
+            return await _context.Orders
+                .Where(o => o.IsProcessed && o.OrderDate.Date == date.Date)
+                .SelectMany(o => o.OrderDetails)
+                .SumAsync(od => od.Product.Price * od.Quantity);
         }
     }
 }
