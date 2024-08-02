@@ -1,0 +1,59 @@
+﻿using Azure.Identity;
+using InForno.Context;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using InForno.Dto;
+using InForno.Models;
+using InForno.Interfaces;
+
+namespace InForno.Service
+{
+    public class UserService : IUserService
+    {
+        private readonly InFornoDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;    
+    
+        public UserService(InFornoDbContext context, IHttpContextAccessor httpContextAccessor)
+        {
+            _context = context;
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        public async Task Register (RegisterDto register)
+        {
+            _context.Users.Add(new User { Name = register.Username, 
+                Password = register.Password,
+            Email = register.Email,
+            Role = register.Role} );
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<User> Login(LoginDto logindto)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Name == logindto.Username && x.Password == logindto.Password);
+            if (user == null)
+            {
+                return null;
+            }
+             var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+            };
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var AuthProperties = new AuthenticationProperties();
+            await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), AuthProperties);
+            return user;
+        }
+
+        public async Task Logout()
+        {
+            await _httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        }
+    }
+}
