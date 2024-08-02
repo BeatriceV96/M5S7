@@ -16,9 +16,9 @@ namespace InForno.Models
         [Range(0, 100)]
         public decimal Price { get; set; }
 
-        [Required]
+
         [StringLength(128)]
-        public string Photo { get; set; }
+        public byte[] Photo { get; set; }
 
         [Range(0, 60)]
         public int DeliveryTimeInMinutes { get; set; }

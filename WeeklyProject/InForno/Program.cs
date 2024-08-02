@@ -17,6 +17,7 @@ builder.Services.AddHttpContextAccessor();
 // Register IUserService and its implementation
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 
 // Configure cookie authentication

@@ -1,5 +1,7 @@
 ﻿using InForno.Dto;
 using InForno.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace InForno.Interfaces
 {
