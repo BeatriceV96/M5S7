@@ -4,52 +4,61 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
+<h2 class="text-center">Product Details</h2>
 
-<div>
-    <h4>Product</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.DeliveryTimeInMinutes)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.DeliveryTimeInMinutes)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Photo)
-        </dt>
-        <dd class="col-sm-10">
-            @if (Model.Photo != null && Model.Photo.Length > 0)
-            {
-                <img src="data:image;base64,@Convert.ToBase64String(Model.Photo)" alt="Product Image" style="width: 100px; height: auto;" />
-            }
-            else
-            {
-                <span>No image available</span>
-            }
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Ingredients)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Ingredients)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Details</h4>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Name</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Name)</dd>
+
+                        <dt class="col-sm-4">Price</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Price)</dd>
+
+                        <dt class="col-sm-4">Delivery Time (in minutes)</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.DeliveryTimeInMinutes)</dd>
+
+                        <dt class="col-sm-4">Photo</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.Photo != null)
+                            {
+                                <img src="data:image;base64,@System.Convert.ToBase64String(Model.Photo)" alt="Product Image" class="img-thumbnail" />
+                            }
+                            else
+                            {
+                                <span>No image available</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-4">Ingredients</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.Ingredients != null && Model.Ingredients.Count > 0)
+                            {
+                                <ul>
+                                    @foreach (var ingredient in Model.Ingredients)
+                                    {
+                                        <li>@ingredient.Name</li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <span>No ingredients available</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+                <div class="card-footer text-center">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

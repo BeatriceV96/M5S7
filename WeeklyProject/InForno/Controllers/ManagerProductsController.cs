@@ -4,22 +4,21 @@ using InForno.Interfaces;
 using InForno.Models;
 using InForno.Dto;
 using Microsoft.AspNetCore.Authorization;
-using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 
-namespace WeeklyProject.Controllers
+namespace InForno.Controllers
 {
-    [Authorize(Roles = "Admin,Manager")] // Limita l'accesso solo agli amministratori e ai gestori
+    [Authorize(Roles = "Admin,Manager")]
     public class ManagerProductsController : Controller
     {
         private readonly IProductService _productService;
-        private readonly IOrderService _orderService;
+        private readonly IIngredientService _ingredientService;
 
-        public ManagerProductsController(IProductService productService, IOrderService orderService)
+        public ManagerProductsController(IProductService productService, IIngredientService ingredientService)
         {
             _productService = productService;
-            _orderService = orderService;
+            _ingredientService = ingredientService;
         }
 
         public async Task<IActionResult> Index()
@@ -38,8 +37,11 @@ namespace WeeklyProject.Controllers
             return View(product);
         }
 
-        public IActionResult Create()
+
+
+        public async Task<IActionResult> Create()
         {
+            ViewBag.Ingredients = await _ingredientService.GetAllIngredientsAsync();
             return View();
         }
 
@@ -50,7 +52,7 @@ namespace WeeklyProject.Controllers
             if (productDto.Photo == null || productDto.Photo.Length == 0)
             {
                 ModelState.AddModelError("Photo", "Product image is required");
-                ViewBag.product = await _productService.GetAllProductsAsync();
+                ViewBag.Ingredients = await _ingredientService.GetAllIngredientsAsync();
                 return View(productDto);
             }
 
@@ -70,7 +72,7 @@ namespace WeeklyProject.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Ingredients = await _productService.GetAllProductsAsync();
+            ViewBag.Ingredients = await _ingredientService.GetAllIngredientsAsync();
             return View(productDto);
         }
 
@@ -91,7 +93,7 @@ namespace WeeklyProject.Controllers
                 Ingredients = string.Join(", ", product.Ingredients.Select(i => i.Name))
             };
 
-            ViewBag.ProductId = id;
+            ViewBag.Ingredients = await _ingredientService.GetAllIngredientsAsync();
             return View(productDto);
         }
 
@@ -114,7 +116,8 @@ namespace WeeklyProject.Controllers
                 await _productService.UpdateProductAsync(id, productDto, imageBytes, selectedIngredients);
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.ProductId = id;
+
+            ViewBag.Ingredients = await _ingredientService.GetAllIngredientsAsync();
             return View(productDto);
         }
 
@@ -134,98 +137,6 @@ namespace WeeklyProject.Controllers
         {
             await _productService.DeleteProductAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        // Metodi per gestire gli ordini
-        public async Task<IActionResult> Orders()
-        {
-            var orders = await _orderService.GetAllOrdersAsync();
-            return View(orders);
-        }
-
-        public async Task<IActionResult> OrderDetails(int id)
-        {
-            var order = await _orderService.GetOrderByIdAsync(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-            return View(order);
-        }
-
-        public IActionResult CreateOrder()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateOrder(OrderDto orderDto)
-        {
-            if (ModelState.IsValid)
-            {
-                await _orderService.CreateOrderAsync(orderDto);
-                return RedirectToAction(nameof(Orders));
-            }
-            return View(orderDto);
-        }
-
-        public async Task<IActionResult> EditOrder(int id)
-        {
-            var order = await _orderService.GetOrderByIdAsync(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            var orderDto = new OrderDto
-            {
-                UserId = order.UserId,
-                OrderDate = order.OrderDate,
-                ShippingAddress = order.ShippingAddress,
-                Notes = order.Notes,
-                IsProcessed = order.IsProcessed,
-                OrderDetails = order.OrderDetails.Select(od => new OrderDetailDto
-                {
-                    OrderId = od.OrderId,
-                    ProductId = od.ProductId,
-                    Quantity = od.Quantity
-                }).ToList()
-            };
-
-            ViewBag.OrderId = id;
-            return View(orderDto);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditOrder(int id, OrderDto orderDto)
-        {
-            if (ModelState.IsValid)
-            {
-                await _orderService.UpdateOrderAsync(id, orderDto);
-                return RedirectToAction(nameof(Orders));
-            }
-            ViewBag.OrderId = id;
-            return View(orderDto);
-        }
-
-        public async Task<IActionResult> DeleteOrder(int id)
-        {
-            var order = await _orderService.GetOrderByIdAsync(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-            return View(order);
-        }
-
-        [HttpPost, ActionName("DeleteOrder")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteOrderConfirmed(int id)
-        {
-            await _orderService.DeleteOrderAsync(id);
-            return RedirectToAction(nameof(Orders));
         }
     }
 }
