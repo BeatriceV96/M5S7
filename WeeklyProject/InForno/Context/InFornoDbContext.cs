@@ -11,6 +11,8 @@ namespace InForno.Context
         public virtual DbSet<Ingredient> Ingredients { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
+        public virtual DbSet<CartItem> CartItems { get; set; } 
+
         public InFornoDbContext(DbContextOptions<InFornoDbContext> options) : base(options) { }
     }
 }

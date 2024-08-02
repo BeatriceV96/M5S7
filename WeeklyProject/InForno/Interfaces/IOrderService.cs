@@ -9,7 +9,7 @@ namespace InForno.Interfaces
     {
         Task<List<Order>> GetAllOrdersAsync();
         Task<Order> GetOrderByIdAsync(int id);
-        Task<Order> CreateOrderAsync(OrderDto orderDto);
+        Task<OrderDto> CreateOrderAsync(OrderDto orderDto);
         Task<Order> UpdateOrderAsync(int id, OrderDto orderDto);
         Task DeleteOrderAsync(int id);
     }

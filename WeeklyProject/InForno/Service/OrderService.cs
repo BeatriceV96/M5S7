@@ -29,7 +29,7 @@ namespace InForno.Service
                                         .FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public async Task<Order> CreateOrderAsync(OrderDto orderDto)
+        public async Task<OrderDto> CreateOrderAsync(OrderDto orderDto)
         {
             var order = new Order
             {
@@ -47,8 +47,12 @@ namespace InForno.Service
 
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
-            return order;
+
+            orderDto.Id = order.Id;
+            return orderDto;
         }
+
+
 
         public async Task<Order> UpdateOrderAsync(int id, OrderDto orderDto)
         {

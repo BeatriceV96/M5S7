@@ -1,0 +1,52 @@
+﻿@model IEnumerable<InForno.Models.CartItem>
+
+@{
+    ViewData["Title"] = "Carrello";
+}
+
+<h2>Carrello</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Prodotto</th>
+            <th>Quantità</th>
+            <th>Prezzo</th>
+            <th>Totale</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Product.Name</td>
+                <td>
+                    <form asp-action="UpdateCartItem" method="post">
+                        <input type="hidden" name="productId" value="@item.ProductId" />
+                        <input type="number" name="quantity" value="@item.Quantity" min="1" />
+                        <button type="submit" class="btn btn-primary">Aggiorna</button>
+                    </form>
+                </td>
+                <td>@string.Format("{0:C}", item.Product.Price)</td>
+                <td>@string.Format("{0:C}", item.Product.Price * item.Quantity)</td>
+                <td>
+                    <form asp-action="RemoveFromCart" method="post">
+                        <input type="hidden" name="productId" value="@item.ProductId" />
+                        <button type="submit" class="btn btn-danger">Rimuovi</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="d-flex justify-content-between">
+    <div>
+        <a asp-action="ClearCart" class="btn btn-warning">Svuota Carrello</a>
+    </div>
+    <div>
+        <a asp-action="Products" class="btn btn-secondary">Torna Indietro</a>
+        <a asp-action="Checkout" class="btn btn-success">Procedi al Checkout</a>
+    </div>
+</div>

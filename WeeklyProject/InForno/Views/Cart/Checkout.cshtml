@@ -1,0 +1,43 @@
+﻿@model IEnumerable<InForno.Models.CartItem>
+
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<h2>Checkout</h2>
+
+<form asp-action="Checkout" method="post">
+    <div class="form-group">
+        <label for="shippingAddress">Indirizzo di Spedizione</label>
+        <input type="text" class="form-control" id="shippingAddress" name="shippingAddress" required />
+    </div>
+    <div class="form-group">
+        <label for="notes">Note</label>
+        <textarea class="form-control" id="notes" name="notes"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Conferma Ordine</button>
+</form>
+
+<h3>Riepilogo Ordine</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Prodotto</th>
+            <th>Quantità</th>
+            <th>Prezzo</th>
+            <th>Totale</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Product.Name</td>
+                <td>@item.Quantity</td>
+                <td>@item.Product.Price.ToString("C")</td>
+                <td>@(item.Product.Price * item.Quantity).ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
