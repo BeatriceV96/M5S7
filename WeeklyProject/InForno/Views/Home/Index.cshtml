@@ -2,8 +2,39 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Benvenuto in InForno!</h1>
-    <p class="lead">Ordina le tue pizze preferite online</p>
-    <a class="btn btn-primary btn-lg" href="@Url.Action("Products", "Cart")">Ordina adesso!</a>
+<div class="jumbotron text-center">
+    <div class="overlay">
+        <h1 class="display-4">Benvenuto in InForno!</h1>
+        <p class="lead">Ordina le tue pizze preferite online</p>
+        <a class="btn btn-custom btn-lg" href="@Url.Action("Register", "Auth")">Ordina adesso!</a>
+    </div>
 </div>
+
+<style>
+    .jumbotron {
+        height: 100vh;
+        background-size: cover;
+        background-position: center;
+        color: white;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .overlay {
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 2rem;
+        border-radius: 15px;
+    }
+
+    .btn-custom {
+        background-color: #ff6600;
+        border-color: #ff6600;
+    }
+
+        .btn-custom:hover {
+            background-color: #ff8533;
+            border-color: #ff8533;
+        }
+</style>

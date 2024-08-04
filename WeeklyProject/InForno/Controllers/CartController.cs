@@ -33,6 +33,8 @@ namespace InForno.Controllers
         {
             var userId = GetUserId();
             var cartItems = await _cartService.GetCartItemsAsync(userId);
+            var orderTotal = cartItems.Sum(item => item.Product.Price * item.Quantity);
+            ViewBag.OrderTotal = orderTotal;
             return View(cartItems);
         }
 
@@ -71,8 +73,11 @@ namespace InForno.Controllers
         {
             var userId = GetUserId();
             var cartItems = await _cartService.GetCartItemsAsync(userId);
+            var orderTotal = cartItems.Sum(item => item.Product.Price * item.Quantity);
+            ViewBag.OrderTotal = orderTotal;
             return View(cartItems);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Checkout(string shippingAddress, string notes)

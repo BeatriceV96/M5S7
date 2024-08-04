@@ -5,7 +5,7 @@ namespace InForno.Interfaces
 {
     public interface IUserService
     {
-        Task Register(RegisterDto register);
+        Task<bool> Register(RegisterDto registerDto);
         Task<User> Login(LoginDto logindto);
         Task Logout();
     }

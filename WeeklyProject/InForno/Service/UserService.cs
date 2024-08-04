@@ -1,9 +1,7 @@
-﻿using Azure.Identity;
-using InForno.Context;
+﻿using InForno.Context;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using InForno.Dto;
 using InForno.Models;
@@ -14,21 +12,26 @@ namespace InForno.Service
     public class UserService : IUserService
     {
         private readonly InFornoDbContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;    
-    
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
         public UserService(InFornoDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task Register (RegisterDto register)
+        public async Task<bool> Register(RegisterDto register)
         {
-            _context.Users.Add(new User { Name = register.Username, 
+            var user = new User
+            {
+                Name = register.Username,
                 Password = register.Password,
-            Email = register.Email,
-            Role = register.Role} );
-            await _context.SaveChangesAsync();
+                Email = register.Email,
+                Role = register.Role
+            };
+            _context.Users.Add(user);
+            var result = await _context.SaveChangesAsync();
+            return result > 0;
         }
 
         public async Task<User> Login(LoginDto logindto)
@@ -38,7 +41,7 @@ namespace InForno.Service
             {
                 return null;
             }
-             var claims = new List<Claim>
+            var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Name),
                 new Claim(ClaimTypes.Email, user.Email),

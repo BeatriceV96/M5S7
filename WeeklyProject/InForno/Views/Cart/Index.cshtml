@@ -4,49 +4,53 @@
     ViewData["Title"] = "Carrello";
 }
 
-<h2>Carrello</h2>
+<h2 class="text-center my-4">Carrello</h2>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Prodotto</th>
-            <th>Quantità</th>
-            <th>Prezzo</th>
-            <th>Totale</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
             <tr>
-                <td>@item.Product.Name</td>
-                <td>
-                    <form asp-action="UpdateCartItem" method="post">
-                        <input type="hidden" name="productId" value="@item.ProductId" />
-                        <input type="number" name="quantity" value="@item.Quantity" min="1" />
-                        <button type="submit" class="btn btn-primary">Aggiorna</button>
-                    </form>
-                </td>
-                <td>@string.Format("{0:C}", item.Product.Price)</td>
-                <td>@string.Format("{0:C}", item.Product.Price * item.Quantity)</td>
-                <td>
-                    <form asp-action="RemoveFromCart" method="post">
-                        <input type="hidden" name="productId" value="@item.ProductId" />
-                        <button type="submit" class="btn btn-danger">Rimuovi</button>
-                    </form>
-                </td>
+                <th>Prodotto</th>
+                <th>Quantità</th>
+                <th>Prezzo</th>
+                <th>Totale</th>
+                <th>Azioni</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Product.Name</td>
+                    <td>
+                        <form asp-action="UpdateCartItem" method="post" class="d-flex">
+                            <input type="hidden" name="productId" value="@item.ProductId" />
+                            <input type="number" name="quantity" value="@item.Quantity" min="1" class="form-control w-50 mr-2" />
+                            <button type="submit" class="btn btn-primary">Aggiorna</button>
+                        </form>
+                    </td>
+                    <td>@string.Format("{0:C}", item.Product.Price)</td>
+                    <td>@string.Format("{0:C}", item.Product.Price * item.Quantity)</td>
+                    <td>
+                        <form asp-action="RemoveFromCart" method="post">
+                            <input type="hidden" name="productId" value="@item.ProductId" />
+                            <button type="submit" class="btn btn-danger">Rimuovi</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="text-right mb-4">
+    <h3 class="d-inline-block">Totale Ordine: <span class="text-success">@string.Format("{0:C}", ViewBag.OrderTotal)</span></h3>
+</div>
 
 <div class="d-flex justify-content-between">
+    <a asp-action="ClearCart" class="btn btn-warning btn-lg">Svuota Carrello</a>
     <div>
-        <a asp-action="ClearCart" class="btn btn-warning">Svuota Carrello</a>
-    </div>
-    <div>
-        <a asp-action="Products" class="btn btn-secondary">Torna Indietro</a>
-        <a asp-action="Checkout" class="btn btn-success">Procedi al Checkout</a>
+        <a asp-action="Products" class="btn btn-secondary btn-lg mr-2">Torna Indietro</a>
+        <a asp-action="Checkout" class="btn btn-success btn-lg">Procedi al Checkout</a>
     </div>
 </div>
